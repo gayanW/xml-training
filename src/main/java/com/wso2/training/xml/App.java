@@ -20,33 +20,74 @@
 
 package com.wso2.training.xml;
 
-import javax.xml.transform.stream.StreamSource;
 import java.io.File;
+import java.util.stream.IntStream;
 
 /**
  * Program to perform xml parsing and validation
- * usage: java App (dom|sax) xml_file [xsd_file]
+ * usage: java App <command> <args>
+ *
+ *     Commands:
+ *          parse (dom|sax) xml_file [xsd_file]
+ *          transform xml_file xsf_file
  *
  * sample cases:
- *   $ java App dom data/books.xml
- *   $ java App sax data/books.xml
+ *   $ java App parse dom data/books.xml
+ *   $ java App parse sax data/books.xml
  *
- *   To validate and parse
- *   $ java App dom data/sample.xml data/sample.xsd
+ *   To parse and validate
+ *   $ java App parse dom data/sample.xml data/sample.xsd
+ *
+ *   To transform
+ *   $ java App transform data/article1.xml data/article1a.xsl
  *
  */
 public class App
 {
-    public static void main( String[] args )
-    {
-        if (!(args.length == 2 | args.length == 3)) {
+    public static void main( String[] args ) {
+        if (args.length == 0) {
             printUsageStatement();
             System.exit(1);
         }
 
-        // Commandline arguments
-        String parserArg = args[0];
+        // Handle program arguments
+        String commandArg = args[0];
+        switch (commandArg) {
+            case "parse":
+                parse(args);
+                break;
+            case "transform":
+                transform(args);
+                break;
+            default:
+                System.err.println(commandArg + " is not a valid command");
+                printUsageStatement();
+                System.exit(1);
+        }
+    }
+
+
+    private static void transform(String[] args) {
+        if (!isValidCommand(args, 3)) {
+            printUsageStatement();
+            System.exit(1);
+        }
+
         String xmlFileArg = args[1];
+        String xslFileArg = args[2];
+
+        XmlFunctions.transform(new File(xmlFileArg), new File(xslFileArg), System.out);
+    }
+
+    private static void parse(String[] args) {
+        if (!isValidCommand(args, 3, 4)) {
+            printUsageStatement();
+            System.exit(1);
+        }
+
+        String parserArg = args[1];
+        String xmlFileArg = args[2];
+        File xmlFile = new File(xmlFileArg);
 
         Parser parser = null;
         switch (parserArg) {
@@ -62,32 +103,50 @@ public class App
                 System.exit(1);
         }
 
-        if (args.length == 3) {
+        if (args.length == 4) {
             // Validate
-            String xsdFileArg = args[2];
-            boolean isValid = XmlFunctions.validateByXsd(new File(xmlFileArg), new File(xsdFileArg));
+            String xsdFileArg = args[3];
+            boolean isValid = XmlFunctions.validateByXsd(xmlFile, new File(xsdFileArg));
 
             if (!isValid) {
                 System.exit(1);
             }
         }
 
-        File xmlFile = new File(args[1]);
         parser.parse(xmlFile);
-        XmlFunctions.transform(new File("data/article1.xml"), new File("data/article1b.xsl"), System.out);
     }
+
+    /**
+     * Check whether the command is valid and complete
+     * @param args supplied command-line arguments as an array of String objects
+     * @param validArgCountValues number of arguments a command could take as and array of ints
+     *                            ex: parse command could have either one or two more preceding arguments
+     * @return 'true' if the supplied command is valid
+     */
+    public static boolean isValidCommand(String[] args, int... validArgCountValues) {
+        return IntStream.of(validArgCountValues).anyMatch(x -> x == args.length);
+    }
+
 
 
     /**
      * Prints the usage statement for the application
      */
     private static void printUsageStatement() {
-        System.out.println("usage: java " + App.class.getSimpleName() + " (sax|dom) input_file [xsd_file]");
-        System.out.println("sample cases:\n" +
-                "$ java App dom data/books.xml\n" +
-                "$ java App sax data/books.xml\n" +
-                "To validate and parse\n" +
-                "$ java App dom data/sample.xml data/sample.xsd"
+        System.out.println("usage: java " + App.class.getSimpleName() + " <command> <args>\n" +
+                "Commands:\n" +
+                "\tparse (dom|sax) xml_file [xsd_file]\n" +
+                "\ttransform xml_file xsf_file\n"
+        );
+        System.out.println("Sample cases:\n" +
+                "$ java App parse dom data/books.xml\n" +
+                "$ java App parse sax data/books.xml\n\n" +
+
+                "To parse and validate\n" +
+                "$ java App parse dom data/sample.xml data/sample.xsd\n\n" +
+
+                "To transform\n" +
+                "$ java App transform data/article1.xml data/article1a.xsl"
         );
     }
 }
