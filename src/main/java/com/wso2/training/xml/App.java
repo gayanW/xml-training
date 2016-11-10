@@ -20,20 +20,36 @@
 
 package com.wso2.training.xml;
 
+import javax.xml.transform.stream.StreamSource;
 import java.io.File;
-import java.util.List;
 
+/**
+ * Program to perform xml parsing and validation
+ * usage: java App (dom|sax) xml_file [xsd_file]
+ *
+ * sample cases:
+ *   $ java App dom data/books.xml
+ *   $ java App sax data/books.xml
+ *
+ *   To validate and parse
+ *   $ java App dom data/sample.xml data/sample.xsd
+ *
+ */
 public class App
 {
     public static void main( String[] args )
     {
-        if (args.length != 2) {
+        if (!(args.length == 2 | args.length == 3)) {
             printUsageStatement();
             System.exit(1);
         }
 
+        // Commandline arguments
+        String parserArg = args[0];
+        String xmlFileArg = args[1];
+
         Parser parser = null;
-        switch (args[0]) {
+        switch (parserArg) {
             case "sax":
                 parser = new SaxParser();
                 break;
@@ -46,16 +62,32 @@ public class App
                 System.exit(1);
         }
 
-        parser.parse(new File(args[1]));
-    }
+        if (args.length == 3) {
+            // Validate
+            String xsdFileArg = args[2];
+            boolean isValid = XmlFunctions.validateByXsd(new File(xmlFileArg), new File(xsdFileArg));
 
-    private static void printBookModels(List<BookModel> bookModels) {
-        for (BookModel bookModel : bookModels) {
-            System.out.println(bookModel);
+            if (!isValid) {
+                System.exit(1);
+            }
         }
+
+        File xmlFile = new File(args[1]);
+        parser.parse(xmlFile);
+        XmlFunctions.transform(new File("data/article1.xml"), new File("data/article1b.xsl"), System.out);
     }
 
+
+    /**
+     * Prints the usage statement for the application
+     */
     private static void printUsageStatement() {
-        System.err.println("usage: java " + App.class.getSimpleName() + " (sax|dom) input_file");
+        System.out.println("usage: java " + App.class.getSimpleName() + " (sax|dom) input_file [xsd_file]");
+        System.out.println("sample cases:\n" +
+                "$ java App dom data/books.xml\n" +
+                "$ java App sax data/books.xml\n" +
+                "To validate and parse\n" +
+                "$ java App dom data/sample.xml data/sample.xsd"
+        );
     }
 }

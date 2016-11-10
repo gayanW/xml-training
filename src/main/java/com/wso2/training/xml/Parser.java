@@ -22,6 +22,9 @@ package com.wso2.training.xml;
 
 import java.io.File;
 
+/**
+ * Common interface for SaxParser and DomParser
+ */
 interface Parser {
     void parse(File xml);
 }

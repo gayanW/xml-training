@@ -27,6 +27,13 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Handler that parse <book> elemnts and their content
+ * This extracts and produces a list of BookModels
+ *
+ * All book contents (ex: title, author) of each book element will be stored
+ * in the corresponding BookModel as key-value pairs
+ */
 public class SaxBookHandler extends DefaultHandler {
 
     private List<BookModel> books = new ArrayList<>();
@@ -67,6 +74,15 @@ public class SaxBookHandler extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         super.characters(ch, start, length);
         accumulator.append(ch, start, length);
+    }
+
+    /**
+     * Prints all extracted BookModels
+     */
+    private void printBookModels() {
+        for (BookModel bookModel : books) {
+            System.out.println(bookModel);
+        }
     }
 
     public List<BookModel> getBooks() {

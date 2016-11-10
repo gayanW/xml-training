@@ -31,10 +31,17 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * SAXParser class to parse xml
+ */
 public class SaxParser implements Parser {
 
     private static final Logger logger = LoggerFactory.getLogger(App.class);
 
+    /**
+     * Parse xml file using default sax handler
+     * @param xml xml file to be parsed
+     */
     public void parse(File xml) {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         saxParserFactory.setNamespaceAware(true);

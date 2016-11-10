@@ -24,24 +24,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 class BookModel {
-    private HashMap<String, String> detailsHashMap;
+    // Element contents of the parent <book>
+    private HashMap<String, String> bookContent;
 
     private BookModel() {
-        this.detailsHashMap = new HashMap<String, String>();
+        this.bookContent = new HashMap<String, String>();
     }
 
     static BookModel newInstance() {
         return new BookModel();
     }
 
+
+    /**
+     * Put content/info of BookModel as key-value pairs
+     * ex: key - title, value - Harry Potter..
+     * @param key ex: title, author, description
+     * @param value ex: Harry Potter, J. K. Rowling
+     */
     void putKeyValue(String key, String value) {
-        detailsHashMap.put(key, value);
+        bookContent.put(key, value);
     }
 
+    /**
+     * @return string containing elements of BookModel
+     */
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<String, String> entry : detailsHashMap.entrySet()) {
+        for (Map.Entry<String, String> entry : bookContent.entrySet()) {
             stringBuilder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
         }
 

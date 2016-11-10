@@ -31,11 +31,18 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Class to parse xml using DOM
+ */
 public class DomParser implements Parser {
 
     private static final Logger logger = LoggerFactory.getLogger(DomParser.class);
     private Document document;
 
+    /**
+     * Parse the given xml file using DOM
+     * @param xml xml file to be parsed
+     */
     public void parse(File xml) {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
@@ -54,6 +61,10 @@ public class DomParser implements Parser {
         }
     }
 
+    /**
+     * Get DOM Document object. Return null if no xml is parsed.
+     * @return DOM Document object.
+     */
     public Document getDocument() {
         return document;
     }
