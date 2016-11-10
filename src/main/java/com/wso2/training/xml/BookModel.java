@@ -28,7 +28,7 @@ class BookModel {
     private HashMap<String, String> bookContent;
 
     private BookModel() {
-        this.bookContent = new HashMap<String, String>();
+        this.bookContent = new HashMap<>();
     }
 
     static BookModel newInstance() {
@@ -47,7 +47,7 @@ class BookModel {
     }
 
     /**
-     * @return string containing elements of BookModel
+     * @return string containing elements of the BookModel
      */
     @Override
     public String toString() {

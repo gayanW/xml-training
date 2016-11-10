@@ -67,6 +67,10 @@ public class App
     }
 
 
+    /**
+     * Handle the command $ java App transform xml_file xsl_file
+     * @param args all the supplied command-line arguments
+     */
     private static void transform(String[] args) {
         if (!isValidCommand(args, 3)) {
             printUsageStatement();
@@ -79,6 +83,10 @@ public class App
         XmlFunctions.transform(new File(xmlFileArg), new File(xslFileArg), System.out);
     }
 
+    /**
+     * Handle the command $ java App parse (sax|dom) xml_file [xsd_file]
+     * @param args all the supplied command-line arguments
+     */
     private static void parse(String[] args) {
         if (!isValidCommand(args, 3, 4)) {
             printUsageStatement();
